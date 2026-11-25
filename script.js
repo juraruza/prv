@@ -2,7 +2,7 @@
 const USE_BACKEND = true;
 
 // TADY si každý student nastaví svoje údaje (až bude backend):
-const BACKEND_URL = "https://prv-1-67gz.onrender.com/";
+const BACKEND_URL = "https://prv-1-67gz.onrender.com/chat";
 const STUDENT_ID = "Mike_Oxlong4IT";
 
 const form = document.getElementById("question-form");
@@ -48,12 +48,14 @@ form.addEventListener("submit", async (e) => {
       body: JSON.stringify(payload)
     });
 
+    const data = await res.json().catch(() => ({}));
+
     if (!res.ok) {
-      answerDiv.textContent = "Server vrátil chybu: " + res.status;
+      answerDiv.textContent = data.error
+        ? `Chyba serveru (${res.status}): ${data.error}`
+        : `Server vrátil chybu: ${res.status}`;
       return;
     }
-
-    const data = await res.json();
 
     if (data.reply) {
       answerDiv.textContent = data.reply;
